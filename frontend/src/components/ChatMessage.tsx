@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import CodeBlock from "./CodeBlock";
 import "./ChatMessage.css";
 
 interface ChatMessageProps {
@@ -10,6 +11,18 @@ interface ChatMessageProps {
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ isUser, message }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
   return (
     <div
       className={`message-wrapper ${
@@ -44,18 +57,38 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isUser, message }) => {
                 components={{
                   code: ({ className, children, ...props }: any) => {
                     const match = /language-(\w+)/.exec(className || "");
+                    const isInline = !className;
+
+                    if (isInline) {
+                      return (
+                        <code className="inline-code" {...props}>
+                          {children}
+                        </code>
+                      );
+                    }
+
                     return (
-                      <code
-                        className={match ? "code-block" : "inline-code"}
-                        {...props}
-                      >
+                      <code className="code-block" {...props}>
                         {children}
                       </code>
                     );
                   },
-                  pre: ({ children }: any) => (
-                    <pre className="code-block">{children}</pre>
-                  ),
+                  pre: ({ children }: any) => {
+                    // Extract the code content and language from the children
+                    const codeElement = React.Children.toArray(
+                      children
+                    )[0] as any;
+                    const codeContent = codeElement?.props?.children || "";
+                    const className = codeElement?.props?.className || "";
+                    const match = /language-(\w+)/.exec(className);
+                    const language = match ? match[1] : "";
+
+                    return (
+                      <CodeBlock className="code-block" language={language}>
+                        {codeContent}
+                      </CodeBlock>
+                    );
+                  },
                   p: ({ children }) => (
                     <p className="markdown-paragraph">{children}</p>
                   ),
@@ -93,6 +126,33 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isUser, message }) => {
                 {message}
               </ReactMarkdown>
             )}
+          </div>
+          <div className="message-actions">
+            <button
+              className={`copy-button ${copied ? "copied" : ""}`}
+              onClick={handleCopy}
+              title={copied ? "Copied!" : "Copy message"}
+            >
+              {copied ? (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                </svg>
+              ) : (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </div>

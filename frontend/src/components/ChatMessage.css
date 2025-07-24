@@ -56,6 +56,7 @@
 .message-content {
   flex: 1;
   min-width: 0;
+  position: relative;
 }
 
 .message-text {
@@ -360,6 +361,94 @@
   font-weight: bold;
 }
 
+/* Message actions */
+.message-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.message-wrapper:hover .message-actions {
+  opacity: 1;
+}
+
+.copy-button {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.copy-button:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.copy-button.copied {
+  background: #dcfce7;
+  border-color: #bbf7d0;
+  color: #16a34a;
+}
+
+.copy-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Update colors for light theme */
+.message-wrapper.user-message {
+  background: #f8f9fa;
+}
+
+.message-wrapper.assistant-message {
+  background: #ffffff;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.message-text {
+  color: #374151;
+}
+
+.markdown-paragraph {
+  color: #374151;
+}
+
+.markdown-h1,
+.markdown-h2,
+.markdown-h3,
+.markdown-h4,
+.markdown-h5,
+.markdown-h6 {
+  color: #1f2937;
+}
+
+.markdown-bold {
+  color: #1f2937;
+}
+
+.markdown-italic {
+  color: #374151;
+}
+
+.user-avatar {
+  background: #6366f1;
+}
+
+.assistant-avatar {
+  background: #10b981;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .message-container {
@@ -386,5 +475,14 @@
 
   .message-text {
     font-size: 14px;
+  }
+
+  .copy-button {
+    padding: 4px;
+  }
+
+  .copy-button svg {
+    width: 12px;
+    height: 12px;
   }
 }
