@@ -3,8 +3,8 @@
   margin: 1em 0;
   border-radius: 8px;
   overflow: hidden;
-  background: #0d1117;
-  border: 1px solid #30363d;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
 }
 
 .code-block-header {
@@ -12,13 +12,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: #161b22;
-  border-bottom: 1px solid #30363d;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--accent-color);
   font-size: 12px;
 }
 
 .code-language {
-  color: #7d8590;
+  color: var(--text-primary);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -26,9 +26,9 @@
 
 .code-copy-button {
   background: transparent;
-  border: 1px solid #30363d;
+  border: 1px solid var(--accent-color);
   border-radius: 4px;
-  color: #7d8590;
+  color: var(--text-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -40,24 +40,24 @@
 }
 
 .code-copy-button:hover {
-  background: #21262d;
-  border-color: #444c56;
-  color: #f0f6fc;
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--text-primary);
   opacity: 1;
 }
 
 .code-copy-button.copied {
-  background: #238636;
-  border-color: #2ea043;
-  color: #ffffff;
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--text-primary);
   opacity: 1;
 }
 
 .code-block-wrapper pre {
   margin: 0;
   padding: 16px;
-  background: #0d1117 !important;
-  color: #e6edf3;
+  background: var(--bg-primary) !important;
+  color: var(--text-primary);
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas,
     "Liberation Mono", Menlo, monospace;
   font-size: 14px;
@@ -82,16 +82,16 @@
 }
 
 .code-block-wrapper pre::-webkit-scrollbar-track {
-  background: #161b22;
+  background: var(--bg-secondary);
 }
 
 .code-block-wrapper pre::-webkit-scrollbar-thumb {
-  background: #30363d;
+  background: var(--border-color);
   border-radius: 4px;
 }
 
 .code-block-wrapper pre::-webkit-scrollbar-thumb:hover {
-  background: #444c56;
+  background: var(--accent-color);
 }
 
 /* Responsive design */

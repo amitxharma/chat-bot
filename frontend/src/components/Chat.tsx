@@ -2,11 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
+import LoadingSpinner from "./LoadingSpinner";
+import WelcomePlaceholder from "./WelcomePlaceholder";
 import "./Chat.css";
 
 interface Message {
   user: string;
   bot: string;
+  isTyping?: boolean;
 }
 
 interface ChatProps {
@@ -21,7 +24,9 @@ const Chat: React.FC<ChatProps> = ({ chatId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [, setTypingMessageIndex] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch chat history on component mount or when chatId changes
   useEffect(() => {
@@ -54,6 +59,46 @@ const Chat: React.FC<ChatProps> = ({ chatId }) => {
     scrollToBottom();
   }, [messages]);
 
+  // Typing effect function
+  const typeMessage = (fullText: string, messageIndex: number) => {
+    let currentIndex = 0;
+    setTypingMessageIndex(messageIndex);
+
+    const typeNextChar = () => {
+      if (currentIndex <= fullText.length) {
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          if (updatedMessages[messageIndex]) {
+            updatedMessages[messageIndex] = {
+              ...updatedMessages[messageIndex],
+              bot: fullText.substring(0, currentIndex),
+              isTyping: currentIndex < fullText.length,
+            };
+          }
+          return updatedMessages;
+        });
+        currentIndex++;
+
+        if (currentIndex <= fullText.length) {
+          typingIntervalRef.current = setTimeout(typeNextChar, 20); // Adjust speed here
+        } else {
+          setTypingMessageIndex(null);
+        }
+      }
+    };
+
+    typeNextChar();
+  };
+
+  // Clean up typing interval on unmount
+  useEffect(() => {
+    return () => {
+      if (typingIntervalRef.current) {
+        clearTimeout(typingIntervalRef.current);
+      }
+    };
+  }, []);
+
   // Handle sending a message
   const handleSendMessage = async (message: string) => {
     try {
@@ -65,10 +110,12 @@ const Chat: React.FC<ChatProps> = ({ chatId }) => {
       const tempMessage: Message = {
         user: message,
         bot: "",
+        isTyping: false,
       };
 
       // Add user message to the chat immediately for better UX
       setMessages((prevMessages) => [...prevMessages, { ...tempMessage }]);
+      const messageIndex = messages.length;
 
       // Generate chatId if not provided
       const currentChatId = chatId || `chat-${Date.now()}`;
@@ -79,17 +126,9 @@ const Chat: React.FC<ChatProps> = ({ chatId }) => {
         chatId: currentChatId,
       });
 
-      // Update the message with the bot's response
+      // Update the message with the bot's response using typing effect
       if (response.data && response.data.reply) {
-        setMessages((prevMessages) => {
-          // Replace the last message with the complete conversation
-          const updatedMessages = [...prevMessages];
-          updatedMessages[updatedMessages.length - 1] = {
-            user: message,
-            bot: response.data.reply,
-          };
-          return updatedMessages;
-        });
+        typeMessage(response.data.reply, messageIndex);
       } else {
         throw new Error("Invalid response from server");
       }
@@ -116,24 +155,20 @@ const Chat: React.FC<ChatProps> = ({ chatId }) => {
     <div className="chat-container">
       <div className="chat-messages">
         {messages.length === 0 ? (
-          <div className="empty-chat">
-            <p>No messages yet. Start a conversation!</p>
-          </div>
+          <WelcomePlaceholder />
         ) : (
           messages.map((msg, index) => (
             <React.Fragment key={index}>
               <ChatMessage isUser={true} message={msg.user} />
-              <ChatMessage isUser={false} message={msg.bot} />
+              <ChatMessage
+                isUser={false}
+                message={msg.bot}
+                isTyping={msg.isTyping}
+              />
             </React.Fragment>
           ))
         )}
-        {loading && (
-          <div className="loading-indicator">
-            <div className="loading-dot"></div>
-            <div className="loading-dot"></div>
-            <div className="loading-dot"></div>
-          </div>
-        )}
+        {loading && <LoadingSpinner size="medium" text="Thinking..." />}
         {error && (
           <div className="error-message">
             <p>Error: {error}</p>

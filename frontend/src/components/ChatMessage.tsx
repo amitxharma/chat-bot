@@ -8,9 +8,14 @@ import "./ChatMessage.css";
 interface ChatMessageProps {
   isUser: boolean;
   message: string;
+  isTyping?: boolean;
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ isUser, message }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({
+  isUser,
+  message,
+  isTyping = false,
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -51,80 +56,83 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isUser, message }) => {
             {isUser ? (
               message
             ) : (
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeHighlight]}
-                components={{
-                  code: ({ className, children, ...props }: any) => {
-                    const match = /language-(\w+)/.exec(className || "");
-                    const isInline = !className;
+              <>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[rehypeHighlight]}
+                  components={{
+                    code: ({ className, children, ...props }: any) => {
+                      const match = /language-(\w+)/.exec(className || "");
+                      const isInline = !className;
 
-                    if (isInline) {
+                      if (isInline) {
+                        return (
+                          <code className="inline-code" {...props}>
+                            {children}
+                          </code>
+                        );
+                      }
+
                       return (
-                        <code className="inline-code" {...props}>
+                        <code className="code-block" {...props}>
                           {children}
                         </code>
                       );
-                    }
+                    },
+                    pre: ({ children }: any) => {
+                      // Extract the code content and language from the children
+                      const codeElement = React.Children.toArray(
+                        children
+                      )[0] as any;
+                      const codeContent = codeElement?.props?.children || "";
+                      const className = codeElement?.props?.className || "";
+                      const match = /language-(\w+)/.exec(className);
+                      const language = match ? match[1] : "";
 
-                    return (
-                      <code className="code-block" {...props}>
+                      return (
+                        <CodeBlock className="code-block" language={language}>
+                          {codeContent}
+                        </CodeBlock>
+                      );
+                    },
+                    p: ({ children }) => (
+                      <p className="markdown-paragraph">{children}</p>
+                    ),
+                    h1: ({ children }) => (
+                      <h1 className="markdown-h1">{children}</h1>
+                    ),
+                    h2: ({ children }) => (
+                      <h2 className="markdown-h2">{children}</h2>
+                    ),
+                    h3: ({ children }) => (
+                      <h3 className="markdown-h3">{children}</h3>
+                    ),
+                    ul: ({ children }) => (
+                      <ul className="markdown-list">{children}</ul>
+                    ),
+                    ol: ({ children }) => (
+                      <ol className="markdown-ordered-list">{children}</ol>
+                    ),
+                    li: ({ children }) => (
+                      <li className="markdown-list-item">{children}</li>
+                    ),
+                    blockquote: ({ children }) => (
+                      <blockquote className="markdown-blockquote">
                         {children}
-                      </code>
-                    );
-                  },
-                  pre: ({ children }: any) => {
-                    // Extract the code content and language from the children
-                    const codeElement = React.Children.toArray(
-                      children
-                    )[0] as any;
-                    const codeContent = codeElement?.props?.children || "";
-                    const className = codeElement?.props?.className || "";
-                    const match = /language-(\w+)/.exec(className);
-                    const language = match ? match[1] : "";
-
-                    return (
-                      <CodeBlock className="code-block" language={language}>
-                        {codeContent}
-                      </CodeBlock>
-                    );
-                  },
-                  p: ({ children }) => (
-                    <p className="markdown-paragraph">{children}</p>
-                  ),
-                  h1: ({ children }) => (
-                    <h1 className="markdown-h1">{children}</h1>
-                  ),
-                  h2: ({ children }) => (
-                    <h2 className="markdown-h2">{children}</h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 className="markdown-h3">{children}</h3>
-                  ),
-                  ul: ({ children }) => (
-                    <ul className="markdown-list">{children}</ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className="markdown-ordered-list">{children}</ol>
-                  ),
-                  li: ({ children }) => (
-                    <li className="markdown-list-item">{children}</li>
-                  ),
-                  blockquote: ({ children }) => (
-                    <blockquote className="markdown-blockquote">
-                      {children}
-                    </blockquote>
-                  ),
-                  strong: ({ children }) => (
-                    <strong className="markdown-bold">{children}</strong>
-                  ),
-                  em: ({ children }) => (
-                    <em className="markdown-italic">{children}</em>
-                  ),
-                }}
-              >
-                {message}
-              </ReactMarkdown>
+                      </blockquote>
+                    ),
+                    strong: ({ children }) => (
+                      <strong className="markdown-bold">{children}</strong>
+                    ),
+                    em: ({ children }) => (
+                      <em className="markdown-italic">{children}</em>
+                    ),
+                  }}
+                >
+                  {message}
+                </ReactMarkdown>
+                {isTyping && <span className="typing-cursor">|</span>}
+              </>
             )}
           </div>
           <div className="message-actions">

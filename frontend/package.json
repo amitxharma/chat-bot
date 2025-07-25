@@ -9,6 +9,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "ajv": "^8.12.0",
     "axios": "^1.6.2",
+    "framer-motion": "^12.23.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^10.1.0",

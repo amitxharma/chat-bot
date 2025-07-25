@@ -1,0 +1,146 @@
+.welcome-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 20px;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.welcome-icon {
+  margin-bottom: 32px;
+}
+
+.chat-icon {
+  font-size: 64px;
+  display: inline-block;
+  filter: drop-shadow(0 4px 12px rgba(74, 158, 255, 0.3));
+}
+
+.welcome-title {
+  font-size: 48px;
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  background: linear-gradient(
+    135deg,
+    var(--accent-color) 0%,
+    #6366f1 25%,
+    #8b5cf6 50%,
+    #ec4899 75%,
+    var(--accent-color) 100%
+  );
+  background-size: 400% 400%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.welcome-subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin: 0 0 40px 0;
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.welcome-features {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  min-width: 120px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.feature-item:hover {
+  background: var(--hover-color);
+  border-color: var(--accent-color);
+}
+
+.feature-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.feature-item span:last-child {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.welcome-prompt {
+  font-size: 16px;
+  color: var(--text-muted);
+  /* font-style: italic; */
+  margin-top: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .welcome-placeholder {
+    padding: 20px 16px;
+  }
+
+  .chat-icon {
+    font-size: 48px;
+  }
+
+  .welcome-title {
+    font-size: 32px;
+  }
+
+  .welcome-subtitle {
+    font-size: 16px;
+  }
+
+  .welcome-features {
+    gap: 16px;
+  }
+
+  .feature-item {
+    min-width: 100px;
+    padding: 16px;
+  }
+
+  .feature-icon {
+    font-size: 20px;
+  }
+
+  .feature-item span:last-child {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-title {
+    font-size: 28px;
+  }
+
+  .welcome-features {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .feature-item {
+    width: 100%;
+    max-width: 200px;
+  }
+}

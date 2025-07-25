@@ -1,0 +1,49 @@
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.loading-dot {
+  border-radius: 50%;
+  background: var(--accent-color);
+}
+
+.loading-spinner.small .loading-dot {
+  width: 6px;
+  height: 6px;
+}
+
+.loading-spinner.medium .loading-dot {
+  width: 8px;
+  height: 8px;
+}
+
+.loading-spinner.large .loading-dot {
+  width: 12px;
+  height: 12px;
+}
+
+.loading-text {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.loading-spinner.small .loading-text {
+  font-size: 12px;
+}
+
+.loading-spinner.large .loading-text {
+  font-size: 16px;
+}
